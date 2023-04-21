@@ -113,4 +113,22 @@ class ClienteServiceTest {
         System.out.println("<<<<<<<<<<<<NUEVO "+clienteDtoNuevo.getNombre());
         assertNotEquals(clienteDtoOriginal.getNombre(), clienteDtoNuevo.getNombre());
     }
+
+    @Test
+    void findByApellidosAndAndNombre() {
+        List<ClienteDto> clienteDtos = clienteService.findByApellidosAndAndNombre("SANCHEZ", "RAUL");
+
+        System.out.println("<<<<<<<<<<<<ENCONTRADO "+clienteDtos.get(0).getNombre());
+
+        assertFalse(clienteDtos.isEmpty());
+        assertEquals("SANCHEZ", clienteDtos.get(0).getApellidos());
+    }
+
+    @Test
+    void obtenerClientesExtrangerosTarjetasActivas() {
+        List<ClienteDto> clienteDtos = clienteService.obtenerClientesExtrangerosTarjetasInactivas("CR");
+        System.out.println("<<<<<<<<<<<<<<<<<<Extrangeros Inactivos>>>>>>>>>>>>>>>>>> ");
+        clienteDtos.forEach(cliente -> System.out.println("Cliente: " + cliente.getApellidos()));
+        assertEquals(3, 3);
+    }
 }

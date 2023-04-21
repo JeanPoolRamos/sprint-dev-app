@@ -129,6 +129,6 @@ class ClienteServiceTest {
         List<ClienteDto> clienteDtos = clienteService.obtenerClientesExtrangerosTarjetasInactivas("CR");
         System.out.println("<<<<<<<<<<<<<<<<<<Extrangeros Inactivos>>>>>>>>>>>>>>>>>> ");
         clienteDtos.forEach(cliente -> System.out.println("Cliente: " + cliente.getApellidos()));
-        assertEquals(3, 3);
+        assertEquals("PEREZ", clienteDtos.get(0).getApellidos());
     }
 }

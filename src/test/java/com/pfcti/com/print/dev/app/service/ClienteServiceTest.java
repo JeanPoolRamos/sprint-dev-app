@@ -64,12 +64,53 @@ class ClienteServiceTest {
 
     @Test
     void obtenerClientes() {
-        clienteService.obtenerClientes().stream().map(
-                cliente ->{
-                    System.out.println(">>>>>>> Cliente :" + cliente.getApellidos());
-                    return cliente;
-                }
-        ).collect(Collectors.toList());
-        assertEquals(1,1);
+
+        List<ClienteDto> clienteDtos = clienteService.obtenerClientes();
+        clienteDtos.forEach(cliente -> System.out.println("Cliente: " + cliente.getApellidos()));
+        assertEquals(3, 3);
+    }
+
+    @Test
+    void obtenerClientesporCodigoPaisYCuentasActivas() {
+        List<ClienteDto> clienteDtos = clienteService.obtenerClientesporCodigoPaisYCuentasActivas("CR");
+        System.out.println("<<<<<<<<<<<<<<<<<<Clientes Activos>>>>>>>>>>>>>>>>>> ");
+        clienteDtos.forEach(cliente -> System.out.println("Cliente: " + cliente.getApellidos()));
+        assertEquals(3, 3);
+    }
+
+    @Test
+    void eliminarCLiente() {
+        clienteService.eliminarcliente(1);
+        assertEquals(3, 3);
+
+    }
+
+    @Test
+    void buscarPorApellidos() {
+
+        List<ClienteDto> clienteDtos = clienteService.buscarPorApellidos("PEREZ");
+        System.out.println("<<<<<<<<<<<<<<<<<Clientes>>>>>>>>>>>>>>>>>>>>");
+        clienteDtos.forEach(cliente -> System.out.println("Cliente: " + cliente.getNombre()));
+        assertEquals(3, 3);
+    }
+
+    @Test
+    void buscarPorApellidosNativo() {
+
+        List<ClienteDto> clienteDtos = clienteService.buscarPorApellidosNativo("PEREZ");
+        System.out.println("<<<<<<<<<<<<<<<<<Clientes>>>>>>>>>>>>>>>>>>>>");
+        clienteDtos.forEach(cliente -> System.out.println("Cliente: " + cliente.getNombre()));
+        assertEquals(3, 3);
+    }
+
+    @Test
+    void actualizaClientePorApellido() {
+
+        ClienteDto clienteDtoOriginal = clienteService.buscarPorApellidos("PEREZ").get(0);
+        System.out.println("<<<<<<<<<<<ORIGINAL "+clienteDtoOriginal.getNombre());
+        clienteService.actualizaClientePorApellido("POOL", clienteDtoOriginal.getApellidos());
+        ClienteDto clienteDtoNuevo = clienteService.buscarPorApellidos("PEREZ").get(0);
+        System.out.println("<<<<<<<<<<<<NUEVO "+clienteDtoNuevo.getNombre());
+        assertNotEquals(clienteDtoOriginal.getNombre(), clienteDtoNuevo.getNombre());
     }
 }

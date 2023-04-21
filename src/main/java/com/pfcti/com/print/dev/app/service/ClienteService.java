@@ -2,16 +2,26 @@ package com.pfcti.com.print.dev.app.service;
 
 import com.pfcti.com.print.dev.app.dto.ClienteDto;
 import com.pfcti.com.print.dev.app.model.Cliente;
-import com.pfcti.com.print.dev.app.repository.ClienteRepository;
+import com.pfcti.com.print.dev.app.model.Cuenta;
+import com.pfcti.com.print.dev.app.repository.*;
+import jakarta.persistence.Tuple;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class ClienteService {
     private ClienteRepository clienteRepository;
+    private DireccionRepository direccionRepository;
+    private CuentaRepository cuentaRepository;
+    private TarjetaRepository tarjetaRepository;
+    private InversionRepository inversionRepository;
 
     public void insertarCliente(ClienteDto clienteDto) {
         Cliente cliente = new Cliente();
@@ -28,18 +38,15 @@ public class ClienteService {
                             throw new RuntimeException("NO Existe el cliente");
                         }
                 );
-        ClienteDto clienteDto = new ClienteDto();
-        clienteDto.setId(cliente.getId());
-        clienteDto.setNombre(cliente.getNombre());
-        clienteDto.setApellidos(cliente.getApellidos());
-        clienteDto.setCedula(cliente.getCedula());
-        clienteDto.setTelefono(cliente.getTelefono());
-        return clienteDto;
+        return fromClientetoClienteTdo(cliente);
     }
 
     public void actualizarCliente(ClienteDto clienteDto){
-        Cliente cliente = new Cliente();
-           /* ClienteDto clienteDtoOld = this.obtenerCliente(clienteDto.getId());*/
+             Cliente cliente = clienteRepository.findById(clienteDto.getId())
+                .orElseThrow(() -> {
+                            throw new RuntimeException("NO Existe el cliente");
+                        }
+                );
             cliente.setId(clienteDto.getId());
             cliente.setNombre(clienteDto.getNombre());
             cliente.setApellidos(clienteDto.getApellidos());
@@ -49,7 +56,78 @@ public class ClienteService {
             clienteRepository.save(cliente);
     }
 
-    public List<Cliente> obtenerClientes(){
-        return clienteRepository.findAll();
+    public List<ClienteDto> obtenerClientes(){
+        List<ClienteDto> clienteDtoList = new ArrayList<>();
+        List<Cliente> clientes = clienteRepository.findAll();
+
+        clientes.forEach(cliente -> {
+            clienteDtoList.add(fromClientetoClienteTdo(cliente));
+        });
+
+        return clienteDtoList;
+    }
+
+    private ClienteDto fromClientetoClienteTdo (Cliente cliente){
+        ClienteDto clienteDto = new ClienteDto();
+        BeanUtils.copyProperties(cliente, clienteDto);
+
+        /*clienteDto.setId(cliente.getId());
+        clienteDto.setNombre(cliente.getNombre());
+        clienteDto.setApellidos(cliente.getApellidos());
+        clienteDto.setCedula(cliente.getCedula());
+        clienteDto.setTelefono(cliente.getTelefono());*/
+        return clienteDto;
+    }
+
+    public List<ClienteDto> obtenerClientesporCodigoPaisYCuentasActivas(String codigoPais)
+    {
+        List<ClienteDto> clienteDtoList = new ArrayList<>();
+        List<Cliente> clientes = clienteRepository.findClientesByPaisAndCuentas_estadoIsTrue(codigoPais);
+        clientes.forEach(cliente -> {
+            clienteDtoList.add(fromClientetoClienteTdo(cliente));
+        });
+
+        return clienteDtoList;
+    }
+
+    public void eliminarcliente(Integer id)
+    {
+        direccionRepository.deleteAllByCliente_id(id);
+        cuentaRepository.deleteAllByCliente_Id(id);
+        clienteRepository.deleteById(id);
+        tarjetaRepository.deleteAllByCliente_id(id);
+        inversionRepository.deleteAllByCliente_Id(id);
+    }
+
+    public List<ClienteDto> buscarPorApellidos(String apellidos)
+    {
+        List<ClienteDto> clienteDtoList = new ArrayList<>() ;
+        List<Cliente> clientes = clienteRepository.buscarPorApellidos(apellidos);
+        clientes.forEach(cliente -> {
+            clienteDtoList.add(fromClientetoClienteTdo(cliente));
+        });
+        return clienteDtoList;
+    }
+
+    public List<ClienteDto> buscarPorApellidosNativo(String apellidos)
+    {
+        List<ClienteDto> clienteDtoList = new ArrayList<>() ;
+        List<Tuple> tuples = clienteRepository.buscarPorApellidosNativo(apellidos);
+
+
+        tuples.forEach(tuple -> {
+            ClienteDto clienteDto = new ClienteDto();
+            clienteDto.setApellidos((String) tuple.get("apellidos"));
+            clienteDto.setNombre((String) tuple.get("Nombre"));
+            clienteDto.setCedula((String) tuple.get("cedula"));
+            clienteDto.setTelefono((String) tuple.get("telefono"));
+            clienteDto.setId((Integer)tuple.get("id"));
+            clienteDtoList.add(clienteDto);
+        });
+        return clienteDtoList;
+    }
+
+    public void actualizaClientePorApellido(String nombre, String apellidos) {
+        clienteRepository.actualizaClientePorApellido(nombre,apellidos);
     }
 }

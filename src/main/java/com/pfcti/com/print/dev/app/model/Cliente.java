@@ -22,7 +22,12 @@ public class Cliente {
     private String cedula;
     @Column
     private String telefono;
+    @Column
+    private String pais;
 
     @OneToMany(mappedBy = "cliente")/*, cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)*/
     private List<Direccion> direcciones;
+
+    @OneToMany(mappedBy = "cliente")/*, cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)*/
+    private List<Cuenta> cuentas;
 }

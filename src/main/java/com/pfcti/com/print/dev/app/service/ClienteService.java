@@ -143,7 +143,7 @@ public class ClienteService {
     public List<ClienteDto> obtenerClientesExtrangerosTarjetasInactivas(String codigoPais)
     {
         List<ClienteDto> clienteDtoList = new ArrayList<>();
-        List<Cliente> clientes = clienteRepository.findClienteByPaisIsNotContainingIgnoreCaseAndAndTarjetas_estadoIsTrue(codigoPais);
+        List<Cliente> clientes = clienteRepository.findClienteByPaisIsNotContainingIgnoreCaseAndAndTarjetas_estadoIsFalse(codigoPais);
         clientes.forEach(cliente -> {
             clienteDtoList.add(fromClientetoClienteTdo(cliente));
         });

@@ -2,6 +2,7 @@ package com.pfcti.com.print.dev.app.service;
 
 import com.pfcti.com.print.dev.app.dto.ClienteDto;
 import com.pfcti.com.print.dev.app.model.Cliente;
+import com.pfcti.com.print.dev.app.repository.ClienteRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
@@ -130,5 +131,46 @@ class ClienteServiceTest {
         System.out.println("<<<<<<<<<<<<<<<<<<Extrangeros Inactivos>>>>>>>>>>>>>>>>>> ");
         clienteDtos.forEach(cliente -> System.out.println("Cliente: " + cliente.getApellidos()));
         assertEquals("PEREZ", clienteDtos.get(0).getApellidos());
+    }
+
+    @Test
+    void buscardinamicamentePorCriteriosDeBusqueda() {
+        List<ClienteDto> clienteDtos = clienteService.buscardinamicamentePorCriteriosDeBusqueda(new ClienteDto());
+        assertFalse(clienteDtos.isEmpty());
+        System.out.println("<<<<<<<<<<<<<<<<<Clientes>>>>>>>>>>>>>>>>>>>>");
+        clienteDtos.forEach(cliente -> System.out.println("Cliente: " + cliente.getNombre()));
+        assertTrue(clienteDtos.size() > 1);
+
+        ClienteDto clienteDto = new ClienteDto();
+        clienteDto.setApellidos("SANCHEZ");
+        clienteDtos = clienteService.buscardinamicamentePorCriteriosDeBusqueda(clienteDto);
+        System.out.println("<<<<<<<<<<<<<<<<<Clientes SANCHEZ>>>>>>>>>>>>>>>>>>>>");
+        clienteDtos.forEach(cliente -> System.out.println("Cliente: " + cliente.getNombre()));
+        assertTrue(clienteDtos.size() > 1);
+
+        clienteDto = new ClienteDto();
+        clienteDto.setApellidos("SANCHEZ");
+        clienteDto.setNombre("HORACIO");
+        clienteDtos = clienteService.buscardinamicamentePorCriteriosDeBusqueda(clienteDto);
+        System.out.println("<<<<<<<<<<<<<<<<<Clientes SANCHEZ>>>>>>>>>>>>>>>>>>>>");
+        clienteDtos.forEach(cliente -> System.out.println("Cliente: " + cliente.getNombre()));
+        assertTrue(clienteDtos.size() == 1);
+
+        clienteDto = new ClienteDto();
+        clienteDto.setApellidos("SANCHEZ");
+        clienteDto.setCedula("111");
+        clienteDtos = clienteService.buscardinamicamentePorCriteriosDeBusqueda(clienteDto);
+        System.out.println("<<<<<<<<<<<<<<<<<Clientes SANCHEZ>>>>>>>>>>>>>>>>>>>>");
+        clienteDtos.forEach(cliente -> System.out.println("Cliente: " + cliente.getNombre()));
+        assertTrue(clienteDtos.size() == 1);
+
+        clienteDto = new ClienteDto();
+        clienteDto.setApellidos("SANCHEZ");
+        clienteDto.setNombre("HORACIO");
+        clienteDto.setCedula("1111");
+        clienteDtos = clienteService.buscardinamicamentePorCriteriosDeBusqueda(clienteDto);
+        System.out.println("<<<<<<<<<<<<<<<<<Clientes SANCHEZ>>>>>>>>>>>>>>>>>>>>");
+        clienteDtos.forEach(cliente -> System.out.println("Cliente: " + cliente.getNombre()));
+        assertTrue(clienteDtos.size() == 1);
     }
 }

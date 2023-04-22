@@ -1,5 +1,6 @@
 package com.pfcti.com.print.dev.app.service;
 
+import com.pfcti.com.print.dev.app.criteria.ClientSpecification;
 import com.pfcti.com.print.dev.app.dto.ClienteDto;
 import com.pfcti.com.print.dev.app.model.Cliente;
 import com.pfcti.com.print.dev.app.model.Cuenta;
@@ -23,6 +24,8 @@ public class ClienteService {
     private CuentaRepository cuentaRepository;
     private TarjetaRepository tarjetaRepository;
     private InversionRepository inversionRepository;
+
+    private ClientSpecification clientSpecification;
 
     public void insertarCliente(ClienteDto clienteDto) {
         Cliente cliente = new Cliente();
@@ -149,5 +152,14 @@ public class ClienteService {
         });
 
         return clienteDtoList;
+    }
+
+    public List<ClienteDto> buscardinamicamentePorCriteriosDeBusqueda(ClienteDto clienteDtoFilter)
+    {
+        return clienteRepository
+                .findAll(clientSpecification.buildFilter(clienteDtoFilter))
+                .stream()
+                .map(this::fromClientetoClienteTdo)
+                .collect(Collectors.toList());
     }
 }

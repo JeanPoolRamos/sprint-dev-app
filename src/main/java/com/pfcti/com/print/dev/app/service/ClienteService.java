@@ -1,7 +1,9 @@
 package com.pfcti.com.print.dev.app.service;
 
 import com.pfcti.com.print.dev.app.criteria.ClientSpecification;
+import com.pfcti.com.print.dev.app.criteria.CuentaSpecification;
 import com.pfcti.com.print.dev.app.dto.ClienteDto;
+import com.pfcti.com.print.dev.app.dto.CuentaDto;
 import com.pfcti.com.print.dev.app.model.Cliente;
 import com.pfcti.com.print.dev.app.model.Cuenta;
 import com.pfcti.com.print.dev.app.repository.*;
@@ -26,6 +28,7 @@ public class ClienteService {
     private InversionRepository inversionRepository;
 
     private ClientSpecification clientSpecification;
+
 
     public void insertarCliente(ClienteDto clienteDto) {
         Cliente cliente = new Cliente();
@@ -162,4 +165,6 @@ public class ClienteService {
                 .map(this::fromClientetoClienteTdo)
                 .collect(Collectors.toList());
     }
+
+
 }

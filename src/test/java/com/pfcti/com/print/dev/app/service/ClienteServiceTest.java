@@ -1,6 +1,7 @@
 package com.pfcti.com.print.dev.app.service;
 
 import com.pfcti.com.print.dev.app.dto.ClienteDto;
+import com.pfcti.com.print.dev.app.dto.CuentaDto;
 import com.pfcti.com.print.dev.app.model.Cliente;
 import com.pfcti.com.print.dev.app.repository.ClienteRepository;
 import jakarta.persistence.EntityManager;
@@ -20,6 +21,7 @@ class ClienteServiceTest {
 
     @Autowired
     private ClienteService clienteService;
+
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -173,4 +175,6 @@ class ClienteServiceTest {
         clienteDtos.forEach(cliente -> System.out.println("Cliente: " + cliente.getNombre()));
         assertTrue(clienteDtos.size() == 1);
     }
+
+
 }

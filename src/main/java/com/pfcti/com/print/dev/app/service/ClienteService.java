@@ -101,9 +101,9 @@ public class ClienteService {
     {
         direccionRepository.deleteAllByCliente_id(id);
         cuentaRepository.deleteAllByCliente_Id(id);
-        clienteRepository.deleteById(id);
         tarjetaRepository.deleteAllByCliente_id(id);
         inversionRepository.deleteAllByCliente_Id(id);
+        clienteRepository.deleteById(id);
     }
 
     public List<ClienteDto> buscarPorApellidos(String apellidos)

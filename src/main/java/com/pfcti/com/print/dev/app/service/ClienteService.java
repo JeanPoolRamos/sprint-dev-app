@@ -11,6 +11,7 @@ import jakarta.persistence.Tuple;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -48,22 +49,22 @@ public class ClienteService {
         return fromClientetoClienteTdo(cliente);
     }
 
-    public void actualizarCliente(ClienteDto clienteDto){
-             Cliente cliente = clienteRepository.findById(clienteDto.getId())
+    public void actualizarCliente(ClienteDto clienteDto) {
+        Cliente cliente = clienteRepository.findById(clienteDto.getId())
                 .orElseThrow(() -> {
                             throw new RuntimeException("NO Existe el cliente");
                         }
                 );
-            cliente.setId(clienteDto.getId());
-            cliente.setNombre(clienteDto.getNombre());
-            cliente.setApellidos(clienteDto.getApellidos());
-            cliente.setCedula(clienteDto.getCedula());
-            cliente.setTelefono(clienteDto.getTelefono());
+        cliente.setId(clienteDto.getId());
+        cliente.setNombre(clienteDto.getNombre());
+        cliente.setApellidos(clienteDto.getApellidos());
+        cliente.setCedula(clienteDto.getCedula());
+        cliente.setTelefono(clienteDto.getTelefono());
 
-            clienteRepository.save(cliente);
+        clienteRepository.save(cliente);
     }
 
-    public List<ClienteDto> obtenerClientes(){
+    public List<ClienteDto> obtenerClientes() {
         List<ClienteDto> clienteDtoList = new ArrayList<>();
         List<Cliente> clientes = clienteRepository.findAll();
 
@@ -74,7 +75,7 @@ public class ClienteService {
         return clienteDtoList;
     }
 
-    private ClienteDto fromClientetoClienteTdo (Cliente cliente){
+    private ClienteDto fromClientetoClienteTdo(Cliente cliente) {
         ClienteDto clienteDto = new ClienteDto();
         BeanUtils.copyProperties(cliente, clienteDto);
 
@@ -86,8 +87,7 @@ public class ClienteService {
         return clienteDto;
     }
 
-    public List<ClienteDto> obtenerClientesporCodigoPaisYCuentasActivas(String codigoPais)
-    {
+    public List<ClienteDto> obtenerClientesporCodigoPaisYCuentasActivas(String codigoPais) {
         List<ClienteDto> clienteDtoList = new ArrayList<>();
         List<Cliente> clientes = clienteRepository.findClientesByPaisAndCuentas_estadoIsTrue(codigoPais);
         clientes.forEach(cliente -> {
@@ -97,8 +97,7 @@ public class ClienteService {
         return clienteDtoList;
     }
 
-    public void eliminarcliente(Integer id)
-    {
+    public void eliminarcliente(Integer id) {
         direccionRepository.deleteAllByCliente_id(id);
         cuentaRepository.deleteAllByCliente_Id(id);
         tarjetaRepository.deleteAllByCliente_id(id);
@@ -106,9 +105,8 @@ public class ClienteService {
         clienteRepository.deleteById(id);
     }
 
-    public List<ClienteDto> buscarPorApellidos(String apellidos)
-    {
-        List<ClienteDto> clienteDtoList = new ArrayList<>() ;
+    public List<ClienteDto> buscarPorApellidos(String apellidos) {
+        List<ClienteDto> clienteDtoList = new ArrayList<>();
         List<Cliente> clientes = clienteRepository.buscarPorApellidos(apellidos);
         clientes.forEach(cliente -> {
             clienteDtoList.add(fromClientetoClienteTdo(cliente));
@@ -116,9 +114,8 @@ public class ClienteService {
         return clienteDtoList;
     }
 
-    public List<ClienteDto> buscarPorApellidosNativo(String apellidos)
-    {
-        List<ClienteDto> clienteDtoList = new ArrayList<>() ;
+    public List<ClienteDto> buscarPorApellidosNativo(String apellidos) {
+        List<ClienteDto> clienteDtoList = new ArrayList<>();
         List<Tuple> tuples = clienteRepository.buscarPorApellidosNativo(apellidos);
 
 
@@ -128,26 +125,25 @@ public class ClienteService {
             clienteDto.setNombre((String) tuple.get("Nombre"));
             clienteDto.setCedula((String) tuple.get("cedula"));
             clienteDto.setTelefono((String) tuple.get("telefono"));
-            clienteDto.setId((Integer)tuple.get("id"));
+            clienteDto.setId((Integer) tuple.get("id"));
             clienteDtoList.add(clienteDto);
         });
         return clienteDtoList;
     }
 
     public void actualizaClientePorApellido(String nombre, String apellidos) {
-        clienteRepository.actualizaClientePorApellido(nombre,apellidos);
+        clienteRepository.actualizaClientePorApellido(nombre, apellidos);
     }
 
-    public List<ClienteDto> findByApellidosAndAndNombre(String apellidos, String nombre){
+    public List<ClienteDto> findByApellidosAndAndNombre(String apellidos, String nombre) {
         return clienteRepository
-                .findByApellidosAndAndNombre(apellidos,nombre)
+                .findByApellidosAndAndNombre(apellidos, nombre)
                 .stream()
                 .map(this::fromClientetoClienteTdo)
                 .collect(Collectors.toList());
     }
 
-    public List<ClienteDto> obtenerClientesExtrangerosTarjetasInactivas(String codigoPais)
-    {
+    public List<ClienteDto> obtenerClientesExtrangerosTarjetasInactivas(String codigoPais) {
         List<ClienteDto> clienteDtoList = new ArrayList<>();
         List<Cliente> clientes = clienteRepository.findClienteByPaisIsNotContainingIgnoreCaseAndAndTarjetas_estadoIsFalse(codigoPais);
         clientes.forEach(cliente -> {
@@ -157,8 +153,7 @@ public class ClienteService {
         return clienteDtoList;
     }
 
-    public List<ClienteDto> buscardinamicamentePorCriteriosDeBusqueda(ClienteDto clienteDtoFilter)
-    {
+    public List<ClienteDto> buscardinamicamentePorCriteriosDeBusqueda(ClienteDto clienteDtoFilter) {
         return clienteRepository
                 .findAll(clientSpecification.buildFilter(clienteDtoFilter))
                 .stream()
@@ -166,5 +161,18 @@ public class ClienteService {
                 .collect(Collectors.toList());
     }
 
-
+    public io.spring.guides.gs_producing_web_service.Cliente obtenerClienteSoap(int idCliente) {
+        Cliente cliente = clienteRepository.findById(idCliente)
+                .orElseThrow(() -> {
+                    throw new RuntimeException("Cliente No Existe");
+                });
+        io.spring.guides.gs_producing_web_service.Cliente clienteWs = new io.spring.guides.gs_producing_web_service.Cliente();
+        clienteWs.setId(cliente.getId());
+        clienteWs.setApellidos(cliente.getApellidos());
+        clienteWs.setNombre(cliente.getNombre());
+        clienteWs.setCedula(cliente.getCedula());
+        clienteWs.setTelefono(cliente.getTelefono());
+        clienteWs.setPais(cliente.getPais());
+        return clienteWs;
+    }
 }

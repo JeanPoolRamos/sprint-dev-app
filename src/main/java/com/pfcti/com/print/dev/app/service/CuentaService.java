@@ -77,6 +77,7 @@ public class CuentaService {
     private CuentaDto fromCuentaToCuentaDto(Cuenta cuenta) {
         CuentaDto cuentaDto = new CuentaDto();
         BeanUtils.copyProperties(cuenta, cuentaDto);
+        cuentaDto.setClienteId(cuenta.getCliente().getId());
         return cuentaDto;
     }
 }

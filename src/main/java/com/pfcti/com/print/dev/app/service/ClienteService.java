@@ -163,7 +163,7 @@ public class ClienteService {
                 .collect(Collectors.toList());
     }
 
-    public io.spring.guides.gs_producing_web_service.Cliente obtenerClienteSoap(int idCliente) {
+   /* public io.spring.guides.gs_producing_web_service.Cliente obtenerClienteSoap(int idCliente) {
         Cliente cliente = clienteRepository.findById(idCliente)
                 .orElseThrow(() -> {
                     throw new RuntimeException("Cliente No Existe");
@@ -176,5 +176,5 @@ public class ClienteService {
         clienteWs.setTelefono(cliente.getTelefono());
         clienteWs.setPais(cliente.getPais());
         return clienteWs;
-    }
+    }*/
 }

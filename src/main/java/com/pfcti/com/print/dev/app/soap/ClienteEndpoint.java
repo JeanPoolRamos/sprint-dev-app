@@ -1,8 +1,8 @@
 package com.pfcti.com.print.dev.app.soap;
 
 import com.pfcti.com.print.dev.app.service.ClienteService;
-import io.spring.guides.gs_producing_web_service.GetClienteRequest;
-import io.spring.guides.gs_producing_web_service.GetClienteResponse;
+/*import io.spring.guides.gs_producing_web_service.GetClienteRequest;
+import io.spring.guides.gs_producing_web_service.GetClienteResponse;*/
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -16,11 +16,11 @@ public class ClienteEndpoint {
     @Autowired
     private ClienteService clienteService;
 
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getClienteRequest")
+  /*  @PayloadRoot(namespace = NAMESPACE_URI, localPart = "getClienteRequest")
     @ResponsePayload
     public GetClienteResponse obtenerCliente(@RequestPayload GetClienteRequest request) {
         GetClienteResponse response = new GetClienteResponse();
         response.setCliente(clienteService.obtenerClienteSoap(request.getId()));
         return response;
-    }
+    }*/
 }

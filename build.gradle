@@ -79,6 +79,19 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.security:spring-security-test'
 
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+	//Actuator module is required for tracing to operate
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation platform('io.micrometer:micrometer-tracing-bom:latest.release')
+	implementation 'io.micrometer:micrometer-tracing'
+	implementation 'io.micrometer:micrometer-observation'
+	implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+
 
 	implementation 'org.springframework.boot:spring-boot-starter-web-services'
 	implementation 'wsdl4j:wsdl4j'
